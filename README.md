@@ -27,4 +27,3 @@ expected output: a corrected file
 
 CONFIG
 edit config.php to use a custom dictionary, etc
-
