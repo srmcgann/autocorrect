@@ -1,9 +1,6 @@
-#############
-"autocorrect", a PHP shell utility
 Author: Scott Mc Gann
 Date: Oct, 6, 2022
 tested with PHP v >= 7.4
-#############
 
 INSTALLATION
 ensure you have PHP, then
