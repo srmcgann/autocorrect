@@ -95,7 +95,7 @@
 					}
 				}
 			}else{
-        echo $words[$idx]['correction'];
+        echo strtolower($words[$idx]['correction']);
 			}
 			$i += $words[$idx]['olen'];
 		}else{
