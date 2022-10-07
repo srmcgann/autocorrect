@@ -8,7 +8,7 @@ $ sudo ./install.sh
 
 
 UNINSTALL
-$ sudo ./uninstall
+$ sudo ./uninstall.sh
 
 
 USAGE
