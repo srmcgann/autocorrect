@@ -12,11 +12,11 @@
   }
 
   function checkWord($word){
-    global $dictwords, $max_hit_size, $target_similarity;
+    global $caps_master, $enforce_caps, $dictwords, $max_hit_size, $target_similarity;
     $hits = [];
     forEach($dictwords as $dictword){
       if(strtoupper($word) === strtoupper($dictword)){
-        return $word;
+        return $enforce_caps && $caps_master == 'dict' ? $dictword : $word;
       }
       if(sizeof($hits) < $max_hit_size){
         $perc = 1 - levenshtein(strtoupper($word), strtoupper($dictword)) / max(strlen($word), strlen($dictword));
@@ -43,7 +43,7 @@
     for($i=0; $i<sizeof($ar); ++$i){
       $code = ord($ar[$i]);
       $good = true;
-      if(!ctype_alpha($ar[$i]) && strlen($token)){
+      if(strlen($token) && !ctype_alpha($ar[$i]) && !ctype_digit($ar[$i]) && $ar[$i] != '_' && $ar[$i]){
         $correction = checkWord($token);
         $ret[] = ['token' => $token, 'correction' => $correction, 'pos'=> $fpos, 'olen' => $ct-$fpos];
         $token = '';
@@ -64,18 +64,28 @@
     return $ret;
   }
 
-  $input = $argv;
-  $text = '';
-  if(sizeof($input)<2){
-    while($val = fgets(STDIN)){
-      $text .= $val;
-    };
-    $input_mode = 'STDIN';
-  }else{
-    array_shift($input);
-    $text = implode(' ', $input);
-    $input_mode = 'argv';
+  require('../db.php');
+  if(isset($_GET['i'])) $text = urldecode($_GET["i"]);
+  if(!isset($text)){
+    $data = json_decode(file_get_contents('php://input'));
+    if($data) $text = $data->{'text'};
   }
+  if(isset($text)){
+    $input_mode = 'php';
+  }else{
+    $input = $argv;
+    $text = '';
+    if(sizeof($input)<2){
+      while($val = fgets(STDIN)){
+        $text .= $val;
+      };
+      $input_mode = 'STDIN';
+    }else{
+      array_shift($input);
+      $text = implode(' ', $input);
+      $input_mode = 'argv';
+    }
+  } 
 
   $words = tokenize($text);
   //forEach($words as $word){
@@ -86,13 +96,17 @@
   for($i = 0; $i<sizeof($data); ++$i){
     $idx = array_search($i, array_column($words, 'pos'));
     if($idx !== false){
-      if(strlen($words[$idx]['correction']) === strlen($words[$idx]['token'])){
-        for($j=0; $j<strlen($words[$idx]['token']); ++$j){
-          if(ctype_upper($words[$idx]['token'][$j])){
-            echo strtoupper($words[$idx]['correction'][$j]);
-          }else{
-            echo strtolower($words[$idx]['correction'][$j]);
+      if($enforce_caps){
+        if(strlen($words[$idx]['correction']) === strlen($words[$idx]['token'])){
+          for($j=0; $j<strlen($words[$idx]['token']); ++$j){
+            if(ctype_upper($caps_master == 'dict' ? $words[$idx]['correction'][$j] : $words[$idx]['token'][$j])){
+              echo strtoupper($words[$idx]['correction'][$j]);
+            }else{
+              echo strtolower($words[$idx]['correction'][$j]);
+            }
           }
+        }else{
+          echo $words[$idx]['correction'];
         }
       }else{
         echo strtolower($words[$idx]['correction']);

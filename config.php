@@ -1,5 +1,5 @@
 <?
-  $dictfile           = 'dict.txt';
+  $dictfile           = 'javascript.txt';
   /* the dictionary to use. one word per line, case insensitive */
 
   $target_similarity  = .5;
@@ -11,4 +11,13 @@
   /* probably don't mess with this. */
   /* per token, it will stop searching the dictionary after this many results are found */
   /* based on similarity defined by $target_similarity above */
+
+  $enforce_caps       = true;
+	/* self explanatory */
+
+  $caps_master        = 'dict';
+	/* only relevant when $enforce_caps == true */
+	/* $caps_master = 'dict' defaults caps corrections to dictionary */
+	/* $caps_master = [anything else] defaults to the user supplied caps, even if misspelled, /*
+	/* unless tokens are of different lengths, in which case lowercase is used by default */
 ?>

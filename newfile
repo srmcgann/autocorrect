@@ -1,2 +1,4 @@
-a fine document with a few DISPOSINGS. We don't care too much about them, unless it's going to be read by someone.
-Thank yoo and have a glorious day!
+let rel = Document.querySelectorAll('#Element1')[0]
+rel.Map((v,i)=>{
+  console.log(v.value)
+})

@@ -1,2 +1,4 @@
-a fine document with a few misspelings. We don't care too much about them, unless it's going to be read by someome.
-Thank yoo and have a glurious day!
+les el = documunt.querselectorAll('#element1')[0]
+el.map((v,i)=>{
+  console.log(v.value)
+})
